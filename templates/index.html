@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Code Optimizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #16161D;
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+}
+        
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #1e1e2a;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+        
+.header {
+    background: linear-gradient(135deg, #1e1e2a 0%, #2d2d3a 100%);
+    color: #ffffff;
+    padding: 30px;
+    text-align: center;
+}
+        
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+        
+.header p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    color: #ffffff;
+}
+        
+.content {
+    padding: 30px;
+    color: #ffffff;
+}
+        
+        .input-section, .output-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.25);
+        }
+        
+        .btn-optimize {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+            width: fit-content;
+        }
+        
+        .btn-optimize:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-optimize:active {
+            transform: translateY(0);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .status-bar {
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            padding: 15px 30px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-dot.online {
+            background: #4caf50;
+        }
+        
+        .status-dot.offline {
+            background: #f44336;
+        }
+        
+        .status-dot.loading {
+            background: #ff9800;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .examples-section {
+            margin-top: 30px;
+        }
+        
+        .examples-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .example-item {
+            background: #f0f7ff;
+            border-left: 4px solid #4facfe;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .example-item:hover {
+            background: #e6f0ff;
+            transform: translateX(5px);
+        }
+        
+        .example-code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            margin: 8px 0;
+        }
+        
+        .example-description {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .btn-optimize {
+                width: 100%;
+                padding: 18px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            textarea {
+                min-height: 150px;
+                font-size: 13px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ Java Code Optimizer</h1>
+            <p>AI-powered Java code optimization using CodeT5-small</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="section-title">
+                    <span>📝 Input Java Code</span>
+                </div>
+                <div class="code-container">
+                    <textarea id="inputCode" placeholder="Enter your Java code here for optimization..."></textarea>
+                </div>
+                <button class="btn-optimize" id="optimizeBtn">⚡ Optimize Code</button>
+            </div>
+            
+            <div class="output-section">
+                <div class="section-title">
+                    <span>✨ Optimized Java Code</span>
+                </div>
+                <div class="code-container">
+                    <textarea id="outputCode" placeholder="Optimized code will appear here..." readonly></textarea>
+                </div>
+            </div>
+            
+            <div class="examples-section">
+                <div class="section-title">
+                    <span>💡 Try These Examples</span>
+                </div>
+                <div id="examplesContainer">
+                    <!-- Examples will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Checking model status...</span>
+            </div>
+            <div class="status-item">
+                <span>Device: <span id="deviceInfo">Unknown</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputCode = document.getElementById('inputCode');
+            const outputCode = document.getElementById('outputCode');
+            const optimizeBtn = document.getElementById('optimizeBtn');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const deviceInfo = document.getElementById('deviceInfo');
+            const examplesContainer = document.getElementById('examplesContainer');
+            
+            // Check health status on load
+            async function checkHealth() {
+                try {
+                    const response = await fetch('/health');
+                    const data = await response.json();
+                    
+                    if (data.model_loaded) {
+                        statusDot.className = 'status-dot online';
+                        statusText.textContent = 'Model loaded and ready';
+                    } else {
+                        statusDot.className = 'status-dot loading';
+                        statusText.textContent = 'Loading model...';
+                    }
+                    
+                    deviceInfo.textContent = data.device;
+                } catch (error) {
+                    statusDot.className = 'status-dot offline';
+                    statusText.textContent = 'Error connecting to server';
+                    deviceInfo.textContent = 'Unknown';
+                }
+            }
+            
+            // Optimize code
+            optimizeBtn.addEventListener('click', async function() {
+                const code = inputCode.value.trim();
+                
+                if (!code) {
+                    alert('Please enter some Java code to optimize');
+                    return;
+                }
+                
+                // Disable button and show loading
+                optimizeBtn.disabled = true;
+                optimizeBtn.textContent = 'Optimizing...';
+                outputCode.value = 'Optimizing...';
+                
+                try {
+                    const response = await fetch('/optimize', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ code: code })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        outputCode.value = `Error: ${data.error}`;
+                    } else {
+                        outputCode.value = data.optimized;
+                    }
+                } catch (error) {
+                    outputCode.value = `Error: ${error.message}`;
+                } finally {
+                    // Re-enable button
+                    optimizeBtn.disabled = false;
+                    optimizeBtn.textContent = '⚡ Optimize Code';
+                }
+            });
+            
+            // Load examples
+            async function loadExamples() {
+                const examples = [
+                    {
+                        code: `String alertLevel;
+switch (sensor.getValue()) {
+    case 0:
+    case 1:
+        alertLevel = "GREEN";
+        break;
+    case 2:
+        alertLevel = "YELLOW";
+        break;
+    case 3:
+        alertLevel = "RED";
+        break;
+    default:
+        alertLevel = "CRITICAL";
+}`,
+                        description: "Switch statement optimization"
+                    },
+                    {
+                        code: `List<Payment> payments = new ArrayList<>(pendingPayments);
+Iterator<Payment> iterator = payments.iterator();
+while (iterator.hasNext()) {
+    Payment p = iterator.next();
+    if (p.isExpired()) {
+        iterator.remove();
+    }
+}`,
+                        description: "Iterator removal optimization"
+                    },
+                    {
+                        code: `String result = "";
+for (int i = 0; i < 100; i++) {
+    result += "Value: " + i + "\\n";
+}`,
+                        description: "String concatenation optimization"
+                    }
+                ];
+                
+                examplesContainer.innerHTML = examples.map(example => `
+                    <div class="example-item" onclick="loadExample(this)">
+                        <div class="example-description">${example.description}</div>
+                        <pre class="example-code">${example.code.trim()}</pre>
+                    </div>
+                `).join('');
+            }
+            
+            // Load example into input
+            window.loadExample = function(element) {
+                const codeElement = element.querySelector('.example-code');
+                inputCode.value = codeElement.textContent;
+                outputCode.value = ''; // Clear output
+            };
+            
+            // Initialize
+            checkHealth();
+            loadExamples();
+            
+            // Periodic health checks
+            setInterval(checkHealth, 5000);
+        });
+    </script>
+</body>
+</html>
