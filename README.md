@@ -18,6 +18,8 @@ This application provides a user-friendly web interface to optimize Java code us
 ## Model Information
 
 - **Base Model**: Salesforce/codet5-small
+- **Fine-tuned Model**: [nlpctx/codet5-java-optimizer](https://huggingface.co/nlpctx/codet5-java-optimizer)
+- **Training Dataset**: [nlpctx/java_optimisation](https://huggingface.co/datasets/nlpctx/java_optimisation)
 - **Training Data**: ~6K training / 680 validation Java optimization pairs
 - **Framework**: HuggingFace Transformers with Seq2SeqTrainer
 - **Optimization Focus**: Java code refactoring and performance improvements
@@ -47,14 +49,12 @@ This application provides a user-friendly web interface to optimize Java code us
    pip install -r requirements.txt
    ```
 
-4. **Verify Model Files Exist**
-   The application expects the fine-tuned model to be in `/home/ssp/model/codet5-fast/`.
-   You should see files like:
-   - `config.json`
-   - `model.safetensors`
-   - `tokenizer_config.json`
-   - `vocab.json`
-   - `merges.txt`
+4. **Load the Model from Hugging Face**
+    The application loads the fine-tuned model from Hugging Face:
+    - **Model**: [nlpctx/codet5-java-optimizer](https://huggingface.co/nlpctx/codet5-java-optimizer)
+    - **Dataset**: [nlpctx/java_optimisation](https://huggingface.co/datasets/nlpctx/java_optimisation)
+    
+    The model will be automatically downloaded on first run.
 
 5. **Run the Application**
    ```bash
@@ -110,9 +110,9 @@ The model has been trained to recognize and optimize common Java patterns:
 ### Common Issues
 
 1. **Model Not Loading**
-   - Verify the model directory `/home/ssp/model/codet5-fast/` exists
-   - Check that all required files are present
-   - Ensure you have sufficient disk space and memory
+    - Ensure you have an internet connection for model downloading
+    - Verify Hugging Face credentials if using gated models
+    - Check that you have sufficient disk space and memory
 
 2. **CUDA/GPU Issues**
    - The application will automatically fall back to CPU if GPU is unavailable
@@ -137,7 +137,7 @@ The model has been trained to recognize and optimize common Java patterns:
 
 ### File Structure
 ```
-java_optimizerő
+java_optimizer
 ├── app.py                 # Main Flask application
 ├── requirements.txt       # Python dependencies
 ├── test_model.py         # Model testing script
@@ -158,5 +158,6 @@ This project is provided for educational and demonstration purposes.
 ## Acknowledgements
 
 - Model based on Salesforce/codet5-small
+- Fine-tuned model: [nlpctx/codet5-java-optimizer](https://huggingface.co/nlpctx/codet5-java-optimizer)
+- Training data: [nlpctx/java_optimisation](https://huggingface.co/datasets/nlpctx/java_optimisation)
 - Built with Flask and HuggingFace Transformers
-- Inspired by Java optimization best practices# DeepLearning
